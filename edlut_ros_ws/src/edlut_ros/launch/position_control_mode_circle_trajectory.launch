@@ -1,0 +1,171 @@
+<!-- This .launch file serves to perform the Circular, Eight-like, or
+Target Reaching trajectories using the default factory-installed position
+control mode of Baxter.
+To select one of the trajectories, uncomment the code-block corresponding to
+"CIRCLE TRAJECTORY", "EIGHT TRAJECTORY", or  "TARGET REACHING", and comment
+the other two.-->
+
+<launch>
+<!-- GLOBAL PARAMETERS
+  -Use_sim_time:
+    False-Run in real time.
+    True-Run in simulation time.
+  -Reference_time: Initialization time. It is set up in edlut simulator node (not used in this case)-->
+<param name="use_sim_time" value="false" type="bool" />
+<param name="reference_time" value="0.0" type="double" />
+
+
+<!-- SYNCHRONIZER NODE
+When using simulation time, this node synchronizes all the other nodes so they all run at the sime time stamps.
+If runnning in real time the synchronizer node will shutdown after the robot has been enabled.
+  -Clock_topics: clock signals published by the other nodes for synchronization purposes
+  -Checking_frequency: rate (Hz) at which the synchronizer checks if the other nodes have finished the current time step
+  -Step_time: size (seconds) of every simulated time step -->
+<node pkg="edlut_ros" name="synchronizer_node" type="synchronizer_node" output="screen">
+  <rosparam param="clock_topics">
+    [clock_gazebo, edlut_ros/clock/arm_state]
+   </rosparam>
+  <param name="checking_frequency" value="10000.0" type="double" />
+  <param name="step_time" value="0.002" type="double" />
+</node>
+
+
+<!-- ROBOT ENABLER NODE
+It enables the robot. Once done it publishes a message advertising
+the robot is ready and then the node is shutdown. -->
+<node pkg="edlut_ros" name="robot_enabler" type="robot_enabler_node.py" output="screen">
+</node>
+
+
+<!-- TRAJECTORY FROM FILE GENERATOR NODE
+It generates a trajectory reading it from a .txt file in the format:
+J0 J1 J2 J3 J4 ...
+J0 J1 J2 J3 J4 ...
+.
+.
+J0 J1 J2 J3 J4 ...
+Each line contains the position/velocity for each joint. Each line corresponds to
+a sample of the trajectory.
+This node reads the files and publishes the trajectory on the desired position
+and desired velocity topics. A trajectory is generated for every joint (joint_list param).
+The node also generates a control signal and avertises it (control_topic) to notify when the different learning trials start.
+Total number of trials and their length (seconds) is also specified. -->
+<!--  CIRCLE TRAJECTORY -->
+<node pkg="edlut_ros" name="q_trajectory_generator" type="q_trajectory_generator_node" output="screen" clear_params="true">
+  # Define private parameters for the EDLUT simulation
+  <param name="number_of_trials" value="1" type="int" />
+  <param name="trial_length" value="10000" type="double" />
+  <param name="joint_state_topic" value="robot/joint_states" type="str" />
+  <param name="update_frequency" value="500.0" type="double" />
+  <param name="samples" value="1000" type="int" />
+  <param name="trajectory_frequency" value="0.5" type="double" />
+  <param name="positions_file_name" value="/home/baxter/catkin_ws_public/src/BaxterCerebellum/src/edlut_ros/trajectory_data_circle/horizontalCircle_1000samples_2seconds_r12_position.txt" type="str" />
+  <param name="velocities_file_name" value="/home/baxter/catkin_ws_public/src/BaxterCerebellum/src/edlut_ros/trajectory_data_circle/horizontalCircle_1000samples_2seconds_r12_velocity.txt" type="str" />
+    <rosparam param="joint_list">
+      [left_s0,left_s1,left_e0,left_e1,left_w0,left_w1,left_w2]
+    </rosparam>
+    <rosparam param="max_pos_amplitude">
+      [1.7,1.04, 3.05, 2.61, 3.05, 2.09, 3.05]
+    </rosparam>
+    <rosparam param="min_pos_amplitude">
+      [-1.7, -2.14, -3.05, -0.05, -3.05, -1.57, -3.05]
+    </rosparam>
+    <rosparam param="max_vel_amplitude">
+      [2.0, 2.0, 2.0, 2.0, 4.0, 4.0, 4.0]
+    </rosparam>
+    <rosparam param="min_vel_amplitude">
+      [-2.0, -2.0, -2.0, -2.0, -4.0, -4.0, -4.0]
+    </rosparam>
+    <param name="desired_position_topic" value="edlut_ros/desired_position/compact" type="str" />
+    <param name="desired_velocity_topic" value="edlut_ros/desired_velocity/compact" type="str" />
+    <param name="control_topic" value="edlut_ros/in_trial" type="str" />
+    <param name="joint_command_topic" value="robot/limb/left/joint_command" type="str" />
+  </node>
+
+
+<!-- BAXTER ARM STATE NODE
+This node avertises Baxter's left arm current state.
+Reads the data coming from Baxter's sensors and publishes the current position
+and velocity for every joint in the specified topics.-->
+<node pkg="edlut_ros" name="baxter_arm_state" type="baxter_arm_state_node_sync" output="screen" clear_params="true">
+  # Define private parameters for the baxter arm state wrapper
+  <param name="input_topic" value="/robot/joint_states" type="str" />
+  <rosparam param="joint_list">
+    [left_s0,left_s1,left_e0,left_e1,left_w0,left_w1,left_w2]
+  </rosparam>
+  <param name="current_position_topic" value="edlut_ros/current_position/compact" type="str" />
+  <param name="current_velocity_topic" value="edlut_ros/current_velocity/compact" type="str" />
+  <param name="clock_topic" value="edlut_ros/clock/arm_state" type="str" />
+  <param name="sampling_frequency" value="500.0" type="double" />
+  <param name="checking_frequency" value="1000.0" type="double" />
+</node>
+
+
+<!-- BAXTER POSITION COMMAND
+This node sends Baxter the position commands according to the desired
+trajectory. The default factory-installed position control mode is used.-->
+<node pkg="edlut_ros" name="torque_command_node" type="baxter_position_command_node" output="screen">
+  # Define private parameters for the spike decoder
+  <param name="input_topic" value="edlut_ros/desired_position/compact" type="str" />
+  <param name="output_topic" value="robot/limb/left/joint_command" type="str" />
+  <rosparam param="joint_list">
+    [left_s0,left_s1,left_e0,left_e1,left_w0,left_w1,left_w2]
+  </rosparam>
+  <param name="limb" value="left" type="str" />
+  <param name="control_topic" value="edlut_ros/in_trial" type="str" />
+  <param name="sampling_frequency" value="500.0" type="double" />
+  <param name="disable_gravity_compensation" value="false" type="bool" />
+  <param name="gravity_topic" value="robot/limb/left/suppress_gravity_compensation" type="str" />
+</node>
+
+
+
+<!-- ############################  PLOT NODES  ############################ -->
+<!-- To display the graphs, run the rqt_reconfigure plugin and select them
+from the menu.
+ >> rosrun rqt_reconfigure rqt_reconfigure
+-->
+
+<!-- POSITION MAE
+This node creates an animated graph of the position Mean Absolute Error (MAE)
+per trial (trial duration specified). -->
+<node pkg="edlut_ros" name="PMAE" type="MAE_Plot_1s.py" output="screen">
+  <param name="current_topic" value="edlut_ros/current_position/compact" type="str" />
+  <param name="desired_topic" value="edlut_ros/desired_position/compact" type="str" />
+  <param name="duration_trial" value="2" type="double" />
+  <rosparam param="joint_list">
+    [left_s0,left_s1,left_e0,left_e1,left_w0,left_w1]
+  </rosparam>
+  <param name="figure_name" value="Position MAE" type="str" />
+  <param name="refresh_rate" value="1.0" type="double" />
+</node>
+
+
+<!-- CARTESIAN SPACE TRAJECTORY PLOT
+This node creates an 3D animation of the trajectory being performed by the
+end-effector in Cartesian space. -->
+<node pkg="edlut_ros" name="trajectory_plot" type="TrajectoryPlot2.py" output="screen">
+  <param name="limb" value="left" type="str" />
+  <param name="refresh_frame" value="50" type="double" />
+  <param name="trajectory_period" value="2.0" type="double" />
+  <param name="trajectory_file" value="/home/baxter/catkin_ws_public/src/BaxterCerebellum/src/edlut_ros/trajectory_data_circle/horizontalCircle_1000samples_2seconds_r12_xyz.txt" type="str" />
+</node>
+
+<!-- PLOT TOPICS
+This node plots the specified topics in RT using the rqt_plot plugin -->
+<node pkg="rqt_plot" name="plot_topics_w1" type="rqt_plot"
+      args="edlut_ros/desired_position/compact/data[0]
+      edlut_ros/current_position/compact/data[0]
+      edlut_ros/desired_position/compact/data[1]
+      edlut_ros/current_position/compact/data[1]
+      edlut_ros/desired_position/compact/data[2]
+      edlut_ros/current_position/compact/data[2]
+      edlut_ros/desired_position/compact/data[3]
+      edlut_ros/current_position/compact/data[3]
+      edlut_ros/desired_position/compact/data[4]
+      edlut_ros/current_position/compact/data[4]
+      edlut_ros/desired_position/compact/data[5]
+      edlut_ros/current_position/compact/data[5]
+      "/>
+
+</launch>
