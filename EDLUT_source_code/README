@@ -1,0 +1,90 @@
+Welcome to the EDLUT (Event-Driven Look-Up Table) project.
+===============================================================
+
+
+
+EDLUT (Event-Driven Look-Up Table) is a computer application for simulating 
+networks of spiking neurons. It was developed in the University of Granada.
+EDLUT uses event-driven simulation scheme and lookup tables to efficiently 
+simulate medium or large spiking neural networks. This allows this application 
+to simulate detailed biological neuron models and to interface with experimental 
+setups (such as a robotic arm) in Real-time computing|real time.
+
+The primary home page for this software can be found at 
+http://edlut.googlecode.com.
+
+EDLUTKernel is developed on Linux/x86 and Windows (with Cygwin) using the GNU Compiler
+Collection. Version 4.x of g++ is supported. 
+
+On Windows platforms, we are working on a new GUI which allows
+you to generate networks, run simulations, show the simulation outputs, and more
+funcionalities.
+
+Platform notes:
+===============
+
+For further information about the installation/compilation process,
+please, see the INSTALL file.
+
+Windows:
+========
+To compile EDLUT in Windows you may need Cygwin be installed with the develope tools
+(g++, make, socket libraries...).
+
+Linux:
+======
+To compile EDLUT in Linux you need the develope tools (g++, make, socket libraries...).
+
+
+Compiling the CVS version
+=========================
+
+If you checked out the sources from CVS you need to have a complete and
+recent version of the GNU autotools to generate required files. Run:
+
+$ make
+
+
+Running simulations
+===================
+
+This package of EDLUTKernel includes an executable file which allows to run
+spiking neural networks simulations. You can use network topologies, neural models,
+input files and other resources existing in the project home page.
+
+The different parameters for EDLUTKernel are the followings:
+
+* Obligatory parameters:
+	-time Simulation_Time(in_seconds) It sets the total simulation time.
+ 	-nf Network_File	It sets the network description file.
+ 	-wf Weights_File	It sets the weights file.
+ 
+* Optional parameters:
+	-info 	It shows the network information.
+	-sf File_Name	It saves the final weights in file File_Name.
+	-wt Save_Weight_Step	It sets the step time between weights saving.
+	-st Step_Time(in_seconds) It sets the step time in simulation.
+	-log File_Name It saves the activity register in file File_Name.
+        -logp File_Name It saves all events register in file File_Name.
+	-if Input_File	It adds the Input_File file in the input sources of the simulation.
+	-of Output_File	It adds the Output_File file in the output targets of the simulation.
+        -openmpQ number_of_OpenMP_queues It sets the number of OpenMP queues.
+        -openmp number_of_OpenMP_threads It sets the number of OpenMP threads.
+	-ic IPAddress:Port Server|Client	It adds the connection as a server or a client in 
+	the specified direction in the input sources of the simulation.
+	-oc IPAddress:Port Server|Client	It adds the connection as a server or a client in
+	the specified direction in the output targets of the simulation.
+	-ioc IPAddress:Port Server|Client	It adds the connection as a server or a client in
+	the specified direction in the input sources and in the output targets.
+	
+Additional Notes
+================
+The EDLUTKernel Library is still in a stage of heavy development.  At this
+point in the project, the API is likely to change from version to version.
+Most changes to existing interfaces will be small and easy to adjust for,
+but there will occasionally be major changes to some areas.  Please report
+any bugs by using the bug tracking system on the development home page.
+Suggestions for improvements are welcome.
+
+Jesús Garrido Alcázar <jgarrido@atc.ugr.es>
+Francisco Naveros Arrabal <fnaveros@atc.ugr.es>

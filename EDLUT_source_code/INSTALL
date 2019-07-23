@@ -1,0 +1,57 @@
+Basic Installation
+==================
+
+   These are generic installation instructions.
+
+   The simplest way to compile this package is:
+
+  1. `cd' to the directory containing the package's source code and 
+  type `./configure' to compile the package. It automatically checks
+  for all the needed prerequisites in order to compile EDLUT, i.e. if it finds
+  Matlab and Simulink installed in the system, it configures the makefile
+  to compile also the edlut mexfile and edlut sfunction, if it finds openMP
+  installed in the system, it sets the makefile to use this utility, and similarly
+  to CUDA installation. Several configuration parameters can be used on configuring
+  the compilation:
+  - '--with-matlab=/pathmatlab': It forces to use /pathmatlab as the root matlab dir.
+  It can be needed if matlab folder is not included in your system path.
+  - '--without-matlab': It avoids the generation of matlab mex file and simulink sfunction.
+  - '--without-simulink': It avoids the compilation of EDLUT as a simulink sfunction.
+  - '--enable-debugging': It generates debugging information (by default this option is disabled).
+  - '--enable-profiling': It generates profiling information (by default this option is disabled).
+  - '--disable-openmp': It disable the use of openMP (by default openMP is enabled if it is installed in the system).
+  - '--with-cuda=/cudapath': It forces to use /cudapath as the root cuda dir. It can be
+  needed if cuda folder is not included in the system path.
+  - '--without-cuda': It avoids the generation of cuda version of EDLUT.
+  
+  1. Type `make' to compile the package. By default it compiles EDLUTKernel executable, 
+  Stepbystep and PrecisionTest examples, EDLUT library for C/C++ developers, matlab mex 
+  function in the mex folder, and simulink sfunction in the sfunction folder. Other 
+  installations are commented below. 
+
+  2. Type `make install' to install the programs and any data files and
+  documentation. Probably you will need root permisions to execute this command.
+
+  3. You can remove the program binaries and object files from the
+     source code directory by typing `make clean'.  
+
+Other Installations
+===================
+
+   You can use differents targets with make command. In this installation package,
+the following ones are allowed:
+
+- library     : generates the library
+- dox         : generates the doxygen documentation if Doxyfile exists
+- doxclean    : cleans up the documentation
+- clean       : cleans up .o lib and exe files
+- distclean   : cleans everything except source+headers
+- install     : installs the library
+- install-dev : installs the library along with documentation+header files
+- install-exe : installs the executable
+- uninstall   : uninstalls the library
+- pkgfile     : generates the pkg-config file
+- flags       : shows the flags that will be used
+- rules       : shows this text
+- clear       : clears #* & dependency files
+

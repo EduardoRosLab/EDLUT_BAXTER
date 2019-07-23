@@ -1,0 +1,58 @@
+################################################################################
+########################### - MAKEFILE FLAGS - #################################
+################################################################################
+
+CCFLAGS = -I$(includedir) -fPIC
+CXXFLAGS = -I$(includedir) -fPIC
+NVCCFLAGS = -Xcompiler -fPIC
+LDFLAGS = -lm
+
+ifeq ($(optimize),true)
+  CCFLAGS += -Wall -O3 -DHAVE_INLINE
+  CXXFLAGS += -Wall -O3 -DHAVE_INLINE
+else
+  CCFLAGS += -g -Wall
+  CXXFLAGS += -g -Wall
+  NVCCFLAGS	+= -g -G
+endif
+
+OPENMP_FLAGS = @openmp_cxxflags@
+
+CCFLAGS += $(OPENMP_FLAGS)
+CXXFLAGS += $(OPENMP_FLAGS)
+LDFLAGS  += $(OPENMP_FLAGS)
+NVCCFLAGS += -Xcompiler $(OPENMP_FLAGS)
+
+ifeq ($(profile),true)
+  LDFLAGS+= -lprofiler
+endif
+
+ARCH 		:= $(shell getconf LONG_BIT)
+UNAME_S 	:= $(shell uname -s)
+
+ifeq ($(OS),Windows_NT)
+    OS_SYSTEM := WINNT
+else
+    UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Linux)
+        OS_SYSTEM := LINUX
+    endif
+    ifeq ($(UNAME_S),Darwin)
+        OS_SYSTEM := OSX
+    endif
+endif
+
+
+ifeq ($(cuda_enabled),true)
+  CCFLAGS	+= -I$(cudarootdir)/include -I$(cudarootdir)/samples/common/inc/
+  CXXFLAGS	+= -I$(cudarootdir)/include -I$(cudarootdir)/samples/common/inc/
+  NVCCFLAGS	+= -I$(cudarootdir)/include -I$(cudarootdir)/samples/common/inc/ -arch='sm_$(cudamajor)$(cudaminor)' -m=$(ARCH)
+  LDFLAGS 	+= -L$(cudalib) -lcudart
+endif
+
+CCFLAGS += -fno-strict-aliasing
+CXXFLAGS += -fno-strict-aliasing
+
+
+  	
+  	
