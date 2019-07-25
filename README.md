@@ -1,5 +1,11 @@
 # EDLUT_BAXTER
 Cerebellar-SNN control of a Baxter robot. The repository includes EDLUT simulator source code, the ROS package to perform closed-loop cerebellar-SNN control and all configuration files needed. 
+There is also a folder containing the results obtained for each of the performed motor tasks. For each of the performed trajectories the following files are included: 
+	* recorded_desired_positions.txt : This file contains the desired position for each joint at each point of time along the experimental setup performed. 
+	* recorded_current_positions.txt : This file contains the current robot's position for each joint at each point of time along the experimental setup performed. 
+	* recorded_joint_MAE.txt : This file contains the Poisition Mean Absolute Error (MAE) (i.e. difference between desired and current position) of each joint for each of the trials performed along the experimental setup. 
+	* recorded_global_MAE.txt : This file contains the global (i.e. mean of all joints) Poisition MAE of each trial performed along the experimental setup. 
+	
 
 ##  Requirements
 * A computer with at least 8GB of RAM, a multicore CPU, an ENVIDIA GPU with CUDA support, and Linux (Ubuntu 15.10 or Ubuntu 16.04, required for ROS Kinetic).
