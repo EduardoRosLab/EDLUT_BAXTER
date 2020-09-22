@@ -9,7 +9,7 @@ There is also a folder containing the results obtained for each of the performed
 	
 
 ##  Requirements
-* A computer with at least 8GB of RAM, a multicore CPU, an ENVIDIA GPU with CUDA support, and Linux (Ubuntu 15.10 or Ubuntu 16.04, required for ROS Kinetic).
+* A computer with at least 8GB of RAM, a multicore CPU, an NVIDIA GPU with CUDA support, and Linux (Ubuntu 15.10 or Ubuntu 16.04, required for ROS Kinetic).
 * A Baxter robot (it can be simulated using Gazebo, although its behaviour is completely different from the real one).
 
 
