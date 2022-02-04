@@ -1,4 +1,9 @@
 # EDLUT_BAXTER
+
+Please cite as: 
+**Abadia, I., Naveros, F., Garrido, J. A., Ros, E., & Luque, N. R. (2019). On robot compliance: a cerebellar control approach. IEEE transactions on cybernetics, 51(5), 2476-2489.**
+
+
 Cerebellar-SNN control of a Baxter robot. The repository includes EDLUT simulator source code, the ROS package to perform closed-loop cerebellar-SNN control and all configuration files needed. 
 
 There is also a folder containing the results obtained for each of the performed motor tasks. For each of the performed trajectories the following files are included: 
